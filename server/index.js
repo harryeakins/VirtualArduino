@@ -6,7 +6,7 @@ var express = require('express')
 , spawn = require('child_process').spawn
 , path = require('path');
 
-var PORT = 28888;
+var PORT = 80;
 
 
 app.use('/', express.static(__dirname + "/static"));

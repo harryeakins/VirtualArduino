@@ -1,13 +1,14 @@
 <html>
 		<head>
         <title>Virtual Arduino - Alpha!</title>
+	<meta charset="utf-8">
 				<script src="/socket.io/socket.io.js"></script>
 				<script src="js/codemirror.js"></script>
 				<script src="js/clike.js"></script>
 				<script src="js/matchbrackets.js"></script>
 				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-				<script src="http://docker.harryeakins.com:8080/target/target-script-min.js#anonymous"></script>
 				<link rel="stylesheet" href="css/codemirror.css">
+				<link rel="stylesheet" href="css/zimit.min.css">
 				<style>
 					.program_counter {
 						background-color: lightblue;
@@ -23,111 +24,32 @@
 							left: 0px;
 					}
 				</style>
-				<script>
-						$(document).ready(function() {
-                var url = document.location.href;
-								var editor = document.editor = CodeMirror.fromTextArea($("#code")[0], {
-										mode: "text/x-arduino",
-										matchBrackets: true,
-								});
-								editor.setSize(486)
-
-								var line1 = editor.getLineHandle(1);
-								var line2 = editor.getLineHandle(2);
-
-								function getCode() {
-									return '#include "Arduino.h"\n' + editor.getValue() + '\n#include "ArduinoAfter.h"\n';
-								}
-
-								function highlightLine(lineNum) {
-										for(var i = 1; i <= editor.lineCount(); i++) {
-											editor.removeLineClass(i, "background", "program_counter");
-										}
-										if(lineNum)
-												editor.addLineClass(lineNum, "background", "program_counter");
-								}
-
-								$("#go").click(function() {
-										if(io.sockets[url]){
-												delete io.sockets[url];
-												io.j = [];
-										}
-										var socket = document.socket = io.connect(url);
-										socket.on('connected', function (data) {
-												console.log(data);
-												socket.emit('code', { 
-														code: getCode()
-												});
-												socket.on('compiled', function(data) {
-														console.log("Compiled: " + data);
-														socket.on('stdout', function(data) {
-																console.log("stdout: " + data);
-
-																if(data.match(/^\*stopped/)) {
-																		var frame_json = data.match(/frame=(.*),thread-id/)[1].replace(/=/g, "\":").replace(/,([a-zA-Z])/g, ",\"$1").replace(/{/g, "{\"");
-																		var frame = JSON.parse(frame_json)
-																		$(".program_counter").removeClass("program_counter");
-																		if(frame.file.match(/prog\.c$/)) {
-																				highlightLine(parseInt(frame.line)-2);
-																				socket.emit("stdin",  "1337-data-evaluate-expression pinVoltages\n");
-																		} else {
-																			socket.emit("stdin", "-exec-continue\n");
-																		}
-																}
-																if(data.match(/^1337/)) {
-																		var led_state = JSON.parse("[" + data.match(/value="{([^}]+)}"/)[1] + "]");
-																	for(var i = 13; i >= 10; i--) {
-																		if(led_state[i] == 1) {
-																			$("#pin" + i).show();
-																		} else {
-																			$("#pin" + i).hide();
-																	  }
-																	}
-															}
-															if(data.match(/^%/)) {
-																	var existingText = $("#console textarea").text();
-																	$("#console textarea").text(existingText + data.slice(1));
-															}
-														});
-														socket.emit('stdin', 'set print repeats 0\n');
-														socket.emit('stdin', '-break-insert setup\n');
-														socket.emit('stdin', '-break-insert loop\n');
-														socket.emit('stdin', '-exec-run\n');
-												});
-												socket.on('error', function(data) {
-														if(data.match(/main\.c:[0-9]+:[0-9]+:/)) {
-																var error = data.match(/main\.c:[0-9]+:[0-9]+:(.*)/)[1];
-																alert(error);
-														} else {
-																alert(data);
-														}
-												});
-										});
-										$("#go").hide();
-										$("#stop").show();
-								});
-								$("#stop").click(function() {
-										if(document.socket) {
-												document.socket.removeAllListeners();
-												document.socket.disconnect();
-										}
-									 highlightLine();
-									 $("#stop").hide();
-									 $("#go").show();
-								});
-								$("#next").click(function() {
-										var socket = document.socket;
-										if(!socket) return;
-										socket.emit('stdin', '-exec-next\n');
-								});
-								$("#stop").hide();
-						});
-				</script>
+				<script src="js/client.js"></script>
 		</head>
 		<body>
-    <h1>This tool is under development</h1>
-				<div style="float:left;width:490px;">
-						<img src="arduino-ide-top.png"></img>
+<header>
+<nav>
+        <a class="site">Virtual Arduino</a>
+        <ul id="menu">
+          <li><a>Section 1</a>
+          </li><li><a>Section 2</a>
+          </li><li><a>Github</a>
+        </li></ul>
+      </nav>
+</header>
+<main>
+<div class="row">
+	<alert class="c6 o3" color="red" data-dismiss="alert" style="margin-top: 5px; margin-bottom: 5px;">
+          <strong>Warning! </strong>This tool is still under development<a href="#">×</a>
+        </alert>
+</div>
+<div class="row">
+				<div class="c6 o1">
+						<img src="arduino-ide-top.png" usemap="#ide">
+						<map name="ide">
+							<area shape="circle" coords="16,72,11" id="compile" href="#">
+							<area shape="circle" coords="45,72,11" id="next" href="#">
+						</map>
 				<textarea id="code">
 int led = 13;
 
@@ -147,19 +69,31 @@ void loop() {
 }
 				</textarea>
 				<img src="arduino-ide-bottom.png"></img>
-				<button id="go">Go</button>
-				<button id="stop">Stop</button>
-				<button id="next">Next</button>
 		</div>
-		<div id="animated_arduino" style="float:left;width:300px; height:250px;">
+		<div class="c4">
+		<div class="row">
+		<div class="c4">
+		<div id="animated_arduino" style="height:250px;">
 				<img id="arduino" width="300px"src="/arduino.jpg" style="z-index:0;"></img>
 				<img id="pin13" width="300px"src="/pin13.png" style="z-index:1;"></img>
 				<img id="pin12" width="300px"src="/pin12.png" style="z-index:2;"></img>
 				<img id="pin11" width="300px"src="/pin11.png" style="z-index:3;"></img>
 				<img id="pin10" width="300px"src="/pin10.png" style="z-index:4;"></img>
 		</div>
-		<div id="console">
-				<textarea rows="10" cols="40"></textarea>	
 		</div>
+		</div>
+		<div class="row">
+		<div class="c4">
+		<div id="console">
+				<textarea rows="10" cols="35"></textarea>	
+		</div>
+		</div>
+		</div>
+</div>
+</div>
+</main>
+<footer>
+<p>Virtual Arduino, Copyright © 2014 <a style="color: #000;" href="http://harryeakins.com">Harry Eakins</a></p>
+</footer>
 		</body>
 </html>
