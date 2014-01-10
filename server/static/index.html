@@ -9,6 +9,8 @@
 				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 				<link rel="stylesheet" href="css/codemirror.css">
 				<link rel="stylesheet" href="css/zimit.min.css">
+				<link rel="stylesheet" href="css/grumble.min.css">
+				<link rel="stylesheet" href="css/crumble.css">
 				<style>
 					.program_counter {
 						background-color: lightblue;
@@ -25,8 +27,17 @@
 					}
 				</style>
 				<script src="js/client.js"></script>
+                <script src="js/Bubble.js"></script>
+                <script src="js/jquery.grumble.js"></script>
+                <script src="js/jquery.crumble.js"></script>
 		</head>
 		<body>
+        <ol id="tour" style="display:none;">
+            <li data-target=".CodeMirror" data-angle="150" data-options="distance:-100">You write your code here</li>
+            <li data-target="#ide_top" data-options="distance:-204" data-angle="100">These two buttons compile and step through the code</li>
+            <li data-target="#animated_arduino" data-angle="190" data-options="distance:-100">The arduino will show pin states when running</li>
+            <li data-target="#console" data-angle="20">Serial output will be shown here</li>
+        </ol>
 <header>
 <nav>
         <a class="site">Virtual Arduino</a>
@@ -45,7 +56,7 @@
 </div>
 <div class="row">
 				<div class="c6 o1">
-						<img src="arduino-ide-top.png" usemap="#ide">
+						<img id="ide_top" class="ide_top" src="arduino-ide-top.png" usemap="#ide">
 						<map name="ide">
 							<area shape="circle" coords="16,72,11" id="compile" href="#">
 							<area shape="circle" coords="45,72,11" id="next" href="#">
@@ -95,5 +106,12 @@ void loop() {
 <footer>
 <p>Virtual Arduino, Copyright © 2014 <a style="color: #000;" href="http://harryeakins.com">Harry Eakins</a></p>
 </footer>
+                <script>
+                    $(document).ready(function() {
+                        setTimeout(function() {
+                            $("#tour").crumble();
+                        }, 100);
+                    });
+                </script>
 		</body>
 </html>
