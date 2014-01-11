@@ -16,8 +16,6 @@ app.use('/', express.static(__dirname + "/static"));
 server.listen(PORT);
 log.info("Server listening on " + PORT);
 
-CODE_DIR = '/tmp';
-
 io.sockets.on('connection', function (socket) {
 	socket.emit('connected', 'YAY!');
 	socket.on('code', function(data) {
