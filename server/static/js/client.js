@@ -73,13 +73,13 @@ code: getCode()
                     socket.emit('stdin', '-exec-run\n');
                 });
                 socket.on('error', function(data) {
-                        if(data.match(/main\.c:[0-9]+:[0-9]+:/)) {
+                    if(data.match(/main\.c:[0-9]+:[0-9]+:/)) {
                         var error = data.match(/main\.c:[0-9]+:[0-9]+:(.*)/)[1];
                         alert(error);
-                        } else {
+                    } else {
                         alert(data);
-                        }
-                        });
+                    }
+                });
             });
 });
 $("#next").click(function() {

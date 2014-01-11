@@ -49,7 +49,7 @@ io.sockets.on('connection', function (socket) {
 				});
 				compiler.stderr.on('data', function(data) {
                     log.warn("compiler.stderr: " + data);
-					socket.emit('stderr', data);
+					socket.emit('error', data);
 				});
 				socket.on('stdin', function(data) {
 					log.debug("socket.stdin: " + data)
@@ -59,6 +59,7 @@ io.sockets.on('connection', function (socket) {
 		});
 		compiler.stderr.on('data', function(data) {
 			log.warn("compiler.stderr: " + data);
+            socket.emit('error', data);
 			compiler_output += data;
 		});
         log.info("Sending code to Docker container (PID: " + compiler.pid + ")");
