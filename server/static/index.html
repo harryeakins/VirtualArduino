@@ -7,6 +7,7 @@
 				<script src="js/clike.js"></script>
 				<script src="js/matchbrackets.js"></script>
 				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+				<script src="js/jquery.cookie.js"></script>
 				<link rel="stylesheet" href="css/codemirror.css">
 				<link rel="stylesheet" href="css/zimit.min.css">
 				<link rel="stylesheet" href="css/grumble.min.css">
@@ -116,9 +117,16 @@ void loop() {
 </footer>
                 <script>
                     $(document).ready(function() {
-                        setTimeout(function() {
-                            $("#tour").crumble();
-                        }, 100);
+                        if(!$.cookie("seen_tutorial")) 
+                        {
+                            setTimeout(function() {
+                                $("#tour").crumble({
+                                    onFinish: function() {
+                                        $.cookie("seen_tutorial", "true");   
+                                    }
+                                });
+                            }, 100);
+                        }
                     });
                 </script>
 		</body>
