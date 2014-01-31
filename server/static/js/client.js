@@ -62,6 +62,7 @@ $(document).ready(function() {
     }
 
     $("#compile").click(function() {
+        $("#overlay").addClass("currently-loading");
         if(io.sockets[url]){
             delete io.sockets[url];
             io.j = [];
@@ -81,6 +82,7 @@ $(document).ready(function() {
                     console.log("stdout: " + data);
 
                     if(data.match(/^\*stopped/)) {
+                        $("#overlay").removeClass("currently-loading");
                         var frame_json = data.match(/frame=(.*),thread-id/)[1].replace(/=/g, "\":").replace(/,([a-zA-Z])/g, ",\"$1").replace(/{/g, "{\"");
                         var frame = JSON.parse(frame_json)
                         $(".program_counter").removeClass("program_counter");

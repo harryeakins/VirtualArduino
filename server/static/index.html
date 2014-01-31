@@ -26,11 +26,32 @@
 							top: 0px;
 							left: 0px;
 					}
+
                     body {
                         background-color: #e8e8e8;
                     }
+
                     #console textarea {
                         resize: none;
+                    }
+
+                    #overlay img { 
+                        display: none;
+                    }
+
+                    #overlay.currently-loading {
+                        display: block;
+                        position: absolute;
+                        z-index: 5000;
+                        top: 0px;
+                        bottom: 0px;
+                        left: 0px;
+                        right: 0px;
+                    }
+                    #overlay.currently-loading img {
+                        display: block;
+                        margin: auto;
+                        margin-top: 150px;
                     }
 				</style>
 				<script src="js/client.js"></script>
@@ -58,6 +79,7 @@
       </nav>
 </header>
 <main>
+<div id="overlay"><img src="loading.gif" alt="Be patient..." /></div>
 <div class="row">
 	<alert class="c4 o4" color="red" data-dismiss="alert" style="margin-top: 5px; margin-bottom: 5px;">
           <strong>Warning! </strong>This tool is still under development
