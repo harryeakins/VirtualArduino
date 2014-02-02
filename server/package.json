@@ -10,7 +10,9 @@
     "forever": "",
     "winston": "~0.7.2",
     "nedb": "~0.9.4",
-    "randomstring": "~1.0.2"
+    "randomstring": "~1.0.2",
+    "selenium-webdriver": "~2.39.0",
+    "mocha": "~1.17.1"
   },
   "devDependencies": {},
   "optionalDependencies": {},
